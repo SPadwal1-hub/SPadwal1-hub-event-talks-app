@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Talks Event Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-container input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .schedule-item {
+            background-color: #e9f5ff;
+            border-left: 5px solid #007bff;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .schedule-item.lunch {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .schedule-item.transition {
+            background-color: #e2e3e5;
+            border-color: #6c757d;
+            font-style: italic;
+            color: #6c757d;
+        }
+        .time {
+            font-weight: bold;
+            color: #0056b3;
+            flex-shrink: 0;
+            width: 120px; /* Fixed width for time */
+        }
+        .details {
+            flex-grow: 1;
+        }
+        .details h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .details p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        .details .speakers {
+            font-style: italic;
+            color: #555;
+        }
+        .details .category {
+            font-size: 0.9em;
+            color: #0056b3;
+            margin-top: 10px;
+        }
+        .category span {
+            background-color: #d0e8ff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-right: 5px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Technical Talks Event Schedule</h1>
+
+        <div class="search-container">
+            <input type="text" id="categorySearch" placeholder="Search talks by category (e.g., AI, Cloud)">
+        </div>
+
+        <div id="schedule">
+            <!-- Schedule items will be rendered here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Helper to format time
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+
+        let currentScheduleTime = new Date();
+        currentScheduleTime.setHours(10, 0, 0, 0); // Start at 10:00 AM
+
+        const scheduleBlocks = [];
+
+        const rawTalks = [
+            {
+                title: "The Future of AI in Software Engineering",
+                speakers: ["Dr. Anya Sharma"],
+                category: ["AI", "Software Engineering"],
+                description: "An in-depth look at how artificial intelligence is shaping the landscape of modern software development, from automated code generation to intelligent debugging."
+            },
+            {
+                title: "Leveraging Cloud-Native Architectures",
+                speakers: ["Mark Johnson", "Sarah Lee"],
+                category: ["Cloud", "DevOps"],
+                description: "Explore the benefits and challenges of building and deploying applications on cloud-native platforms, focusing on scalability and resilience."
+            },
+            {
+                title: "Frontend Performance Optimization Techniques",
+                speakers: ["Emily Chen"],
+                category: ["Frontend", "Web Development"],
+                description: "Discover advanced techniques to boost the performance of your web applications, ensuring a smooth and responsive user experience."
+            },
+            {
+                title: "Data Privacy in the Age of Big Data",
+                speakers: ["Dr. David Rodriguez"],
+                category: ["Security", "Data Science"],
+                description: "A critical discussion on the challenges and best practices for protecting user data in an era dominated by large datasets and advanced analytics."
+            },
+            {
+                title: "Introduction to Quantum Computing",
+                speakers: ["Prof. Alan Turing"],
+                category: ["Quantum Computing", "Future Tech"],
+                description: "An accessible introduction to the principles of quantum mechanics and how they are being harnessed to build revolutionary new computing paradigms."
+            },
+            {
+                title: "Ethical AI: Building Responsible Systems",
+                speakers: ["Maria Garcia"],
+                category: ["AI", "Ethics"],
+                description: "Examine the ethical implications of AI development and deployment, focusing on fairness, accountability, and transparency in AI systems."
+            }
+        ];
+
+        // Function to add a block to the schedule
+        function addBlock(type, durationMinutes, details = {}) {
+            const start = formatTime(currentScheduleTime);
+            currentScheduleTime.setMinutes(currentScheduleTime.getMinutes() + durationMinutes);
+            const end = formatTime(currentScheduleTime);
+            scheduleBlocks.push({ type, startTime: start, endTime: end, ...details });
+        }
+
+        // Build the full schedule
+        addBlock("talk", 60, rawTalks[0]);
+        addBlock("transition", 10, { title: "Transition / Break", description: "Get ready for the next talk!" });
+
+        addBlock("talk", 60, rawTalks[1]);
+        addBlock("transition", 10, { title: "Transition / Break", description: "Get ready for the next talk!" });
+
+        addBlock("talk", 60, rawTalks[2]);
+        addBlock("lunch", 60, { title: "Lunch Break", description: "Enjoy a delicious lunch and network with fellow attendees!" });
+
+        addBlock("talk", 60, rawTalks[3]);
+        addBlock("transition", 10, { title: "Transition / Break", description: "Get ready for the next talk!" });
+
+        addBlock("talk", 60, rawTalks[4]);
+        addBlock("transition", 10, { title: "Transition / Break", description: "Get ready for the next talk!" });
+
+        addBlock("talk", 60, rawTalks[5]);
+
+
+        const scheduleContainer = document.getElementById('schedule');
+        const searchInput = document.getElementById('categorySearch');
+
+        function renderSchedule(filterCategory = '') {
+            scheduleContainer.innerHTML = ''; // Clear previous schedule
+
+            const lowerCaseFilter = filterCategory.toLowerCase();
+
+            scheduleBlocks.forEach(item => {
+                let itemHtml = '';
+                if (item.type === "lunch") {
+                    itemHtml = `
+                        <div class="schedule-item lunch">
+                            <div class="time">${item.startTime} - ${item.endTime}</div>
+                            <div class="details">
+                                <h3>${item.title}</h3>
+                                <p>${item.description}</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (item.type === "transition") {
+                    itemHtml = `
+                        <div class="schedule-item transition">
+                            <div class="time">${item.startTime} - ${item.endTime}</div>
+                            <div class="details">
+                                <h3>${item.title}</h3>
+                                <p>${item.description}</p>
+                            </div>
+                        </div>
+                    `;
+                } else { // type is "talk"
+                    const matchesFilter = item.category.some(cat => cat.toLowerCase().includes(lowerCaseFilter));
+                    if (!filterCategory || matchesFilter) {
+                        itemHtml = `
+                            <div class="schedule-item">
+                                <div class="time">${item.startTime} - ${item.endTime}</div>
+                                <div class="details">
+                                    <h3>${item.title}</h3>
+                                    <p class="speakers">Speakers: ${item.speakers.join(', ')}</p>
+                                    <p>${item.description}</p>
+                                    <p class="category">${item.category.map(cat => `<span>${cat}</span>`).join('')}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                if (itemHtml) { // Only add if it's not filtered out
+                    scheduleContainer.innerHTML += itemHtml;
+                }
+            });
+        }
+
+        // Initial render
+        renderSchedule();
+
+        // Event listener for search input
+        searchInput.addEventListener('keyup', (event) => {
+            renderSchedule(event.target.value);
+        });
+    </script>
+</body>
+</html>
